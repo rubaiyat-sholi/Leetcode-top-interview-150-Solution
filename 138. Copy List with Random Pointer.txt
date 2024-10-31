@@ -1,0 +1,56 @@
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = x
+        self.next = next
+        self.random = random
+
+class Solution:
+    def copyRandomList(self, head: 'Node') -> 'Node':
+        if not head:
+            return None
+        
+        old_to_new = {}
+        
+        current = head
+        while current:
+            old_to_new[current] = Node(current.val)
+            current = current.next
+        
+        current = head
+        while current:
+            if current.next:
+                old_to_new[current].next = old_to_new[current.next]
+            if current.random:
+                old_to_new[current].random = old_to_new[current.random]
+            current = current.next
+        
+        return old_to_new[head]
+
+    def serialize(self, head: 'Node') -> list:
+        """ Serializes the list into a list of [val, random_index] for easier visualization. """
+        nodes = []
+        index_map = {}
+        current = head
+        i = 0
+
+        while current:
+            index_map[current] = i
+            current = current.next
+            i += 1
+
+        current = head
+        while current:
+            random_index = index_map.get(current.random, None)
+            nodes.append([current.val, random_index])
+            current = current.next
+        
+        return nodes
+solution = Solution()
+
+def create_linked_list(data):
+    nodes = [Node(val[0]) for val in data]
+    for i, node in enumerate(nodes):
+        node.next = nodes[i + 1] if i + 1 < len(nodes) else None
+        if data[i][1] is not None:
+            node.random = nodes[data[i][1]]
+    return nodes[0] if nodes else None
