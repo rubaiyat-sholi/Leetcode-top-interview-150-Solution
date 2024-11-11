@@ -1,0 +1,26 @@
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def flatten(self, root: TreeNode) -> None:
+        if not root:
+            return
+        
+        def flatten_tree(node):
+            if not node:
+                return None
+            
+            left_tail = flatten_tree(node.left)
+            right_tail = flatten_tree(node.right)
+            
+            if left_tail:
+                left_tail.right = node.right  
+                node.right = node.left  
+                node.left = None 
+
+            return right_tail if right_tail else left_tail if left_tail else node
+        
+        flatten_tree(root)
