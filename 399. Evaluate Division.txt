@@ -1,0 +1,30 @@
+from collections import defaultdict
+
+class Solution:
+    def calcEquation(self, equations: list[list[str]], values: list[float], queries: list[list[str]]) -> list[float]:
+        graph = defaultdict(dict)
+
+        for (a, b), value in zip(equations, values):
+            graph[a][b] = value
+            graph[b][a] = 1 / value
+
+        def dfs(start, end, visited):
+            if start not in graph or end not in graph:
+                return -1.0
+            if end in graph[start]:
+                return graph[start][end]
+            visited.add(start)
+            for neighbor in graph[start]:
+                if neighbor not in visited:
+                    result = dfs(neighbor, end, visited)
+                    if result != -1.0:
+                        return result * graph[start][neighbor]
+            return -1.0
+        result = []
+        for x, y in queries:
+            if x == y and x in graph:
+                result.append(1.0)
+            else:
+                result.append(dfs(x, y, set()))
+        
+        return result       
