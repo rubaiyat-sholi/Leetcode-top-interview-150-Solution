@@ -1,0 +1,41 @@
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class Solution:
+    def sortList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+
+        mid = self.getMiddle(head)
+        right = mid.next
+        mid.next = None
+
+        left = self.sortList(head)
+        right = self.sortList(right)
+
+        return self.merge(left, right)
+
+    def getMiddle(self, head: ListNode) -> ListNode:
+        slow, fast = head, head
+        while fast.next and fast.next.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+
+    def merge(self, left: ListNode, right: ListNode) -> ListNode:
+        # Merge two sorted linked lists
+        dummy = ListNode(0)
+        tail = dummy
+        while left and right:
+            if left.val < right.val:
+                tail.next = left
+                left = left.next
+            else:
+                tail.next = right
+                right = right.next
+            tail = tail.next
+        tail.next = left if left else right
+
+        return dummy.next
