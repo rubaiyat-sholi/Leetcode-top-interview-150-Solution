@@ -1,0 +1,36 @@
+from collections import deque
+
+class Solution:
+    def snakesAndLadders(self, board: list[list[int]]) -> int:
+        n = len(board)
+
+        def getBoardValue(square):
+            row = (square - 1) // n
+            col = (square - 1) % n
+            if row % 2 == 0: 
+                actual_col = col
+            else: 
+                actual_col = n - 1 - col
+            actual_row = n - 1 - row 
+            return board[actual_row][actual_col]
+
+        visited = set()
+        queue = deque([(1, 0)])  
+
+        while queue:
+            curr, moves = queue.popleft()
+            if curr == n * n: 
+                return moves
+
+            for next_square in range(curr + 1, min(curr + 6, n * n) + 1):
+                if next_square in visited:
+                    continue
+
+                visited.add(next_square)
+                destination = getBoardValue(next_square)
+                if destination == -1:  
+                    queue.append((next_square, moves + 1))
+                else:  
+                    queue.append((destination, moves + 1))
+
+        return -1  
