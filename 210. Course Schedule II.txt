@@ -1,0 +1,23 @@
+from collections import defaultdict, deque
+
+class Solution:
+    def findOrder(self, numCourses, prerequisites):
+        adj_list = defaultdict(list)
+        in_degree = [0] * numCourses
+        
+        for course, prereq in prerequisites:
+            adj_list[prereq].append(course)
+            in_degree[course] += 1
+        zero_in_degree = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        order = []
+        
+        while zero_in_degree:
+            course = zero_in_degree.popleft()
+            order.append(course)
+            
+            for neighbor in adj_list[course]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    zero_in_degree.append(neighbor)
+
+        return order if len(order) == numCourses else []
