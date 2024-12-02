@@ -1,0 +1,51 @@
+class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.word = None  
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        current = self.root
+        for char in word:
+            if char not in current.children:
+                current.children[char] = TrieNode()
+            current = current.children[char]
+        current.word = word  
+
+class Solution:
+    def findWords(self, board, words):
+        def backtrack(node, row, col):
+            letter = board[row][col]
+            current_node = node.children[letter]
+        
+            if current_node.word:
+                result.add(current_node.word)
+                current_node.word = None  
+            board[row][col] = '#'
+
+            for dx, dy in directions:
+                new_row, new_col = row + dx, col + dy
+                if 0 <= new_row < rows and 0 <= new_col < cols and board[new_row][new_col] in current_node.children:
+                    backtrack(current_node, new_row, new_col)
+
+            board[row][col] = letter
+            if not current_node.children:
+                del node.children[letter]
+
+        trie = Trie()
+        for word in words:
+            trie.insert(word)
+
+        result = set()
+        rows, cols = len(board), len(board[0])
+        directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+        for row in range(rows):
+            for col in range(cols):
+                if board[row][col] in trie.root.children:
+                    backtrack(trie.root, row, col)
+
+        return list(result)
