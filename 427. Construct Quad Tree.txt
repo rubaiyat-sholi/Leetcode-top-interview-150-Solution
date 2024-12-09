@@ -1,0 +1,30 @@
+class Node:
+    def __init__(self, val, isLeaf, topLeft=None, topRight=None, bottomLeft=None, bottomRight=None):
+        self.val = val
+        self.isLeaf = isLeaf
+        self.topLeft = topLeft
+        self.topRight = topRight
+        self.bottomLeft = bottomLeft
+        self.bottomRight = bottomRight
+
+class Solution:
+    def construct(self, grid):
+        def build(x1, y1, size):
+            """Recursive function to construct the quad tree."""
+            first_val = grid[x1][y1]
+            is_uniform = all(grid[i][j] == first_val for i in range(x1, x1 + size) for j in range(y1, y1 + size))
+            
+            if is_uniform:
+                return Node(first_val == 1, True)
+
+            half = size // 2
+            return Node(
+                val=True,  
+                isLeaf=False,
+                topLeft=build(x1, y1, half),
+                topRight=build(x1, y1 + half, half),
+                bottomLeft=build(x1 + half, y1, half),
+                bottomRight=build(x1 + half, y1 + half, half),
+            )
+        
+        return build(0, 0, len(grid))
