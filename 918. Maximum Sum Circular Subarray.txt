@@ -1,0 +1,18 @@
+class Solution:
+    def maxSubarraySumCircular(self, nums):
+        def kadane(array):
+            """Standard Kadane's algorithm to find max subarray sum."""
+            max_sum = current_sum = array[0]
+            for num in array[1:]:
+                current_sum = max(num, current_sum + num)
+                max_sum = max(max_sum, current_sum)
+            return max_sum
+
+        max_normal = kadane(nums)
+        total_sum = sum(nums)
+        min_subarray_sum = kadane([-num for num in nums])
+        max_circular = total_sum + min_subarray_sum  
+        if max_normal < 0:
+            return max_normal  
+
+        return max(max_normal, max_circular)
