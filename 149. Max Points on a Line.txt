@@ -1,0 +1,34 @@
+from collections import defaultdict
+from math import gcd
+
+class Solution:
+    def maxPoints(self, points: list[list[int]]) -> int:
+        if len(points) <= 2:
+            return len(points)
+
+        def get_slope(p1, p2):
+            dx = p2[0] - p1[0]
+            dy = p2[1] - p1[1]
+            if dx == 0:  
+                return (float('inf'), 0)
+            if dy == 0: 
+                return (0, float('inf'))
+            g = gcd(dy, dx)
+            return (dy // g, dx // g)
+
+        max_points = 0
+
+        for i in range(len(points)):
+            slopes = defaultdict(int)
+            duplicates = 1  
+            for j in range(len(points)):
+                if i == j:
+                    continue
+                if points[i] == points[j]:  
+                    duplicates += 1
+                else:
+                    slope = get_slope(points[i], points[j])
+                    slopes[slope] += 1
+            max_points = max(max_points, max(slopes.values(), default=0) + duplicates)
+
+        return max_points
